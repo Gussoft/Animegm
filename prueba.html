@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Facebook Login JavaScript Example</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // la aplicación conoce el estado actual de inicio de sesión de la persona.
+    // Los documentos completos sobre el objeto de respuesta se pueden encontrar en la documentación.
+    // para FB.getLoginStatus ().
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      testAPI();
+    } else {
+      // The person is not logged into your app or we are unable to tell.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    }
+  }
+
+  // Esta función se llama cuando alguien termina con el inicio de sesión
+  // Botón. Ver el controlador onlogin adjunto a él en la muestra
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '353274861995895',
+      cookie     : true,  // habilitar cookies para permitir que el servidor acceda a session
+      xfbml      : true,  // analizar complementos sociales en esta página
+      version    : 'v3.3' /// La versión de Graph API a usar para la llamada
+    });
+     // Ahora que hemos inicializado el SDK de JavaScript, llamamos
+    // FB.getLoginStatus (). Esta función obtiene el estado del
+    // persona que visita esta página y puede devolver uno de los tres estados a
+    // la devolución de llamada que proporcionas. Ellos pueden ser:
+    //
+    // 1. Inicia sesión en tu aplicación ('conectado')
+    // 2. Ha iniciado sesión en Facebook, pero no en su aplicación ('not_authorized')
+    // 3. No ha iniciado sesión en Facebook y no puede saber si están conectados
+    // tu aplicación o no.
+    //
+    // Estos tres casos se manejan en la función de devolución de llamada.
+
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Aquí ejecutamos una prueba muy simple de Graph API después de iniciar sesión
+  // exitoso Consulte statusChangeCallback () para saber cuándo se realiza esta llamada.
+  function testAPI() {
+    console.log('Bienvenido!  Revisando tu Informacion.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+  }
+</script>
+
+
+<!-- //  A continuación incluimos el plugin social Login Button. Este botón utiliza -->
+<!-- //  JavaScript SDK para presentar un botón de inicio de sesión gráfico que se activa -->
+<!-- //  la función FB.login () cuando se hace clic. -->
+
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status">
+</div>
+
+</body>
+</html>
